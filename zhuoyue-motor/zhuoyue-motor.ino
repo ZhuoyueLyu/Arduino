@@ -22,68 +22,35 @@ const int buttonPin1 = 2;
 const int buttonPin2 = 4;
 int buttonState = 0; // variable for reading the pushbutton status
 int preState = 0;
-
-//////////////////////////////////////////////////////////////////
-/// Use these  if you want to move a specific number of steps
-//  This example moves a full rotation clockwise and then a full rotation counter-clockwise. Repeats.
-
-int position = 2048; // this is the number of steps of a full rotation
+int speed_1 = 200;
+int speed_2 = 400;
+int speed_3 = 600;
+int curr_speed = 600;
 
 void setup()
 {
-  //  stepper1.setMaxSpeed(600); // Sets the maximum permitted speed.  If your motors starts behaving erratically, lower this number. 600 seemed to be the limit for me.
-  //  stepper1.setSpeed(400);    // Sets the speed. Positive numbers rotate clockwise. Negative numbers rotate counter-clockwise.
+   stepper1.setMaxSpeed(600);  
+   stepper1.setSpeed(600); 
    Serial.begin(9600);
 }
-void loop()
-{
-   if (Serial.available() > 0)
-   {
-      int x_mid, y_mid;
-      if (Serial.read() == 'X')
-      {
-         x_mid = Serial.parseInt(); // read center x-coordinate
-         if (Serial.read() == 'Y')
-            y_mid = Serial.parseInt(); // read center y-coordinate
-      }
-      Serial.print("\t");
-      Serial.print(x_mid);
-      Serial.print("\t");
-      Serial.println(y_mid);
-   }
-   // stepper1.runSpeed();
+
+
+
+void loop() {
+  buttonState = digitalRead(buttonPin2);
+  if (buttonState == HIGH) {
+    if (preState != buttonState) {
+      Serial.println("F");
+      stepper1.setSpeed(600);
+    }
+    
+  } else {
+    if (preState != buttonState) {
+      Serial.println("S");
+      stepper1.setSpeed(50);
+    }
+  }
+
+  stepper1.runSpeed();
+  preState = buttonState;
 }
-
-// void loop() {
-
-//   buttonState = digitalRead(buttonPin2);
-
-//   // get the sensor value
-//   // int val = analogRead(0);
-//   if (buttonState == HIGH) {
-//     // turn LED on:
-//     // digitalWrite(ledPin, HIGH);
-//     Serial.println("HH");
-//     if (preState != buttonState) {
-//       Serial.println("Faster");
-//       // stepper.setSpeed(200);
-//         // set the motor speed:
-//       stepper1.setSpeed(100);
-//       // step 1/100 of a revolution:
-//       // myStepper.step(stepsPerRevolution / 100);
-//     }
-
-//   } else {
-//     // turn LED off:
-//     // digitalWrite(ledPin, LOW);
-//     Serial.println("LL");
-//     if (preState != buttonState) {
-//       Serial.println("Slower");
-//       // stepper.setSpeed(100);
-//       stepper1.setSpeed(10);
-//       // step 1/100 of a revolution:
-//       // myStepper.step(stepsPerRevolution / 100);
-//     }
-//   }
-//   stepper1.runSpeed();
-// }

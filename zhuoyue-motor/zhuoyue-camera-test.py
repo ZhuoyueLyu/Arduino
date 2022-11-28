@@ -1,24 +1,22 @@
-import numpy as np
+# Importing OpenCV package
 import cv2
 
-# built-in camera
-cap = cv2.VideoCapture(0)
+# Reading the image
+img = cv2.imread('./img.jpeg')
 
-while (True):
-    ret, frame = cap.read()
+# Converting image to grayscale
+gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    if frame is not None:
-        cv2.imshow("image", frame)
+# Loading the required haar-cascade xml classifier file
+haar_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-    rval, frame = cap.read()
+# Applying the face detection method on the grayscale image
+faces_rect = haar_cascade.detectMultiScale(gray_img, 1.1, 9)
 
-    # gray image
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+# Iterating through rectangles of detected faces
+for (x, y, w, h) in faces_rect:
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-    cv2.imshow('frame', gray)
-    # when hit 'q', terminate the program
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+cv2.imshow('Detected faces', img)
 
-cap.release()
-cv2.destroyAllWindows()
+cv2.waitKey(0)
