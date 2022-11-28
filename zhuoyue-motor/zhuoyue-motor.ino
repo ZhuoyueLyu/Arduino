@@ -8,49 +8,55 @@
 // ********************************************************************
 
 #include <AccelStepper.h>
-#define STEP 4 // 4 for full step, 8 for half step, explanation here: https://www.motioncontrolonline.org/content-detail.cfm/Motion-Control-Application-Case-Studies/What-is-the-difference-between-full-stepping-the-half-stepping-and-the-micro-drive/content_id/3192
 
-// Motor pin definitions
-#define motorPin1 9  // IN1 on the ULN2003 driver 1
-#define motorPin2 10 // IN2 on the ULN2003 driver 1
-#define motorPin3 11 // IN3 on the ULN2003 driver 1
-#define motorPin4 12 // IN4 on the ULN2003 driver 1
+// (Step, Pin1, Pin2, Pin3, Pin4 )
+// 4 for full step, 8 for half step, explanation here: https://www.motioncontrolonline.org/content-detail.cfm/Motion-Control-Application-Case-Studies/What-is-the-difference-between-full-stepping-the-half-stepping-and-the-micro-drive/content_id/3192
+AccelStepper stepper1(4, 9, 10, 11, 12);
 
-AccelStepper stepper1(STEP, motorPin1, motorPin3, motorPin2, motorPin4);
-
-const int buttonPin1 = 2;
-const int buttonPin2 = 4;
-int buttonState = 0; // variable for reading the pushbutton status
-int preState = 0;
-int speed_1 = 200;
-int speed_2 = 400;
-int speed_3 = 600;
-int curr_speed = 600;
+int speed_1 = 10;
+int speed_2 = 100;
+int speed_3 = 400;
+int curr_speed = 400;
+int max_speed = 400;
 
 void setup()
 {
-   stepper1.setMaxSpeed(600);  
-   stepper1.setSpeed(600); 
+   stepper1.setMaxSpeed(max_speed);
+   stepper1.setSpeed(curr_speed);
    Serial.begin(9600);
 }
 
+void loop()
+{
+   int num_faces = 0;
+   // On the server side (python), we only send info
+   // when there is changes. I tried to handle that on this side
+   // but for some reason, whenever the board receive data
+   // it stop spinning, so it makes the board very laggy
+   if (Serial.available() > 0)
+   {
+      num_faces = Serial.parseInt();
+      switch (num_faces)
+      {
+      case 0:
+         update_motor_speed(speed_3);
+         break;
+      case 1:
+         update_motor_speed(speed_2);
+         break;
+      }
+   }
+   // We can't use if/else to provide value because the frequency
+   // of python sending value is probably smaller than the frequency of loop()
+   // therefore, it may jump back and forth between two speeds
+   stepper1.runSpeed();
+}
 
-
-void loop() {
-  buttonState = digitalRead(buttonPin2);
-  if (buttonState == HIGH) {
-    if (preState != buttonState) {
-      Serial.println("F");
-      stepper1.setSpeed(600);
-    }
-    
-  } else {
-    if (preState != buttonState) {
-      Serial.println("S");
-      stepper1.setSpeed(50);
-    }
-  }
-
-  stepper1.runSpeed();
-  preState = buttonState;
+void update_motor_speed(int new_speed)
+{
+   if (curr_speed != new_speed)
+   {
+      stepper1.setSpeed(new_speed);
+      curr_speed = new_speed;
+   }
 }
