@@ -5,10 +5,13 @@ import cv2
 import serial, time
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+print("ssss")
+print(cv2.data.haarcascades)
+# pathZ= '/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/cv2/data/haarcascade_frontalface_default.xml'
 # Change cv2.VideoCapture(1) to cv2.VideoCapture(0). It is a MacOS bug for Coaca applications
 # https://github.com/Classical-machine-learning/invisiblityCloak/issues/3
-cap = cv2.VideoCapture(0)
-ArduinoSerial = serial.Serial('/dev/cu.usbserial-120', 9600, timeout=0.1)
+cap = cv2.VideoCapture(1)
+# ArduinoSerial = serial.Serial('/dev/cu.usbserial-120', 9600, timeout=0.1)
 curr_num_faces = 0
 
 while cap.isOpened():
@@ -20,7 +23,7 @@ while cap.isOpened():
     string = '{0:d}'.format(num_faces)
     print(string)
     if num_faces != curr_num_faces:
-        ArduinoSerial.write(string.encode('utf-8'))
+        # ArduinoSerial.write(string.encode('utf-8'))
         curr_num_faces = num_faces
     for x, y, w, h in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
