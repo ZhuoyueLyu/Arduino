@@ -9,7 +9,7 @@
 
 #include <AccelStepper.h>
 
-// (Step, Pin1, Pin2, Pin3, Pin4 )
+// (Step, Pin1, Pin2, Pin3, Pin4)
 // 4 for full step, 8 for half step, explanation here: https://www.motioncontrolonline.org/content-detail.cfm/Motion-Control-Application-Case-Studies/What-is-the-difference-between-full-stepping-the-half-stepping-and-the-micro-drive/content_id/3192
 AccelStepper stepper1(4, 9, 10, 11, 12);
 
