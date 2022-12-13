@@ -11,8 +11,10 @@
 
 // (Step, Pin1, Pin2, Pin3, Pin4)
 // 4 for full step, 8 for half step, explanation here: https://www.motioncontrolonline.org/content-detail.cfm/Motion-Control-Application-Case-Studies/What-is-the-difference-between-full-stepping-the-half-stepping-and-the-micro-drive/content_id/3192
-AccelStepper stepper1(4, 9, 10, 11, 12); // this is the minute (faster) hand
-AccelStepper stepper2(4, 5, 4, 3, 2);    // this is the hour (slower) hand
+AccelStepper stepper1(4, 9, 11, 10, 12); // this is the minute (faster) hand
+AccelStepper stepper2(4, 5, 3, 4, 2);    // this is the hour (slower) hand
+// https://youtu.be/38gmBsDHnmg
+// reverse pin 2 and 3 for reverse running!!!
 
 int speed_1 = 0;
 int speed_2 = 100;
