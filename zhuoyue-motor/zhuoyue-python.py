@@ -3,6 +3,7 @@
 
 import cv2
 import serial, time
+from scipy import ndimage
 
 # side face detection (indeed...only works with side face, but it actually only works with one side)
 # but we can flip the image to detect the other direction.
@@ -17,8 +18,8 @@ else:
 # pathZ= '/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/cv2/data/haarcascade_frontalface_default.xml'
 # Change cv2.VideoCapture(1) to cv2.VideoCapture(0). It is a MacOS bug for Coaca applications
 # https://github.com/Classical-machine-learning/invisiblityCloak/issues/3
-cap = cv2.VideoCapture(0)
-# ArduinoSerial = serial.Serial('/dev/cu.usbserial-120', 9600, timeout=0.1)
+cap = cv2.VideoCapture(1)
+ArduinoSerial = serial.Serial('/dev/cu.usbserial-1120', 9600, timeout=0.1)
 curr_num_faces = 0
 
 
@@ -33,6 +34,20 @@ def count_num_faces(frame):
 
 while cap.isOpened():
     ret, frame = cap.read()
+
+    h, w, _ = frame.shape
+    # rotate image
+    frame = ndimage.rotate(frame, -45)
+
+    # cropped the center part in the image (because it's in the wrong shaped after rotated 45 degrees
+    # center = frame.shape
+    # w = 750
+    # h = 750
+    # x = center[1] / 2 - w / 2
+    # y = center[0] / 2 - h / 2
+    # frame = frame[int(y):int(y + h), int(x):int(x + w)]
+    frame = frame[0:1200, 0:1200]
+
     num_faces = count_num_faces(frame)
     if is_detecting_side_face:
         frame = cv2.flip(frame, 1)  # mirror the image
@@ -40,7 +55,7 @@ while cap.isOpened():
     string = '{0:d}'.format(num_faces)
     print(string)
     if num_faces != curr_num_faces:
-        # ArduinoSerial.write(string.encode('utf-8'))
+        ArduinoSerial.write(string.encode('utf-8'))
         curr_num_faces = num_faces
 
     # press q to Quit
