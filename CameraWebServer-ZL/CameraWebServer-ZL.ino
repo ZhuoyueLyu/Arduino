@@ -1,45 +1,26 @@
 #include "esp_camera.h"
 #include <WiFi.h>
-
-
-//
-// WARNING!!! PSRAM IC required for UXGA resolution and high JPEG quality
-//            Ensure ESP32 Wrover Module or other board with PSRAM is selected
-//            Partial images will be transmitted if image exceeds buffer size
-//
-//            You must select partition scheme from the board menu that has at least 3MB APP space.
-//            Face Recognition is DISABLED for ESP32 and ESP32-S2, because it takes up from 15 
-//            seconds to process single frame. Face Detection is ENABLED if PSRAM is enabled as well
-
-// ===================
-// Select camera model
-// ===================
-//#define CAMERA_MODEL_WROVER_KIT // Has PSRAM
-//#define CAMERA_MODEL_ESP_EYE // Has PSRAM
-//#define CAMERA_MODEL_ESP32S3_EYE // Has PSRAM
-//#define CAMERA_MODEL_M5STACK_PSRAM // Has PSRAM
-//#define CAMERA_MODEL_M5STACK_V2_PSRAM // M5Camera version B Has PSRAM
-//#define CAMERA_MODEL_M5STACK_WIDE // Has PSRAM
-//#define CAMERA_MODEL_M5STACK_ESP32CAM // No PSRAM
-//#define CAMERA_MODEL_M5STACK_UNITCAM // No PSRAM
 #define CAMERA_MODEL_AI_THINKER // Has PSRAM
-//#define CAMERA_MODEL_TTGO_T_JOURNAL // No PSRAM
-// ** Espressif Internal Boards **
-//#define CAMERA_MODEL_ESP32_CAM_BOARD
-//#define CAMERA_MODEL_ESP32S2_CAM_BOARD
-//#define CAMERA_MODEL_ESP32S3_CAM_LCD
-
 #include "camera_pins.h"
+#include <AccelStepper.h>
+#define STEP 4  // 4 for full step, 8 for half step, explanation here: https://www.motioncontrolonline.org/content-detail.cfm/Motion-Control-Application-Case-Studies/What-is-the-difference-between-full-stepping-the-half-stepping-and-the-micro-drive/content_id/3192
 
-// ===========================
-// Enter your WiFi credentials
-// ===========================
+// Motor pin definitions
+#define motorPin1  12     // IN1 on the ULN2003 driver 1
+#define motorPin2  13     // IN2 on the ULN2003 driver 1
+#define motorPin3  15     // IN3 on the ULN2003 driver 1
+#define motorPin4  14     // IN4 on the ULN2003 driver 1
+
+AccelStepper stepper1(STEP, motorPin1, motorPin3, motorPin2, motorPin4);
+
 const char* ssid = "ESP32-CAM Access Point Zhuoyue";
 const char* password = "66666666";
 
 void startCameraServer();
 
 void setup() {
+     stepper1.setMaxSpeed(600);       // Sets the maximum permitted speed.  If your motors starts behaving erratically, lower this number. 600 seemed to be the limit for me.
+   stepper1.setSpeed(400);   
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
@@ -148,5 +129,7 @@ void setup() {
 
 void loop() {
   // Do nothing. Everything is done in another task by the web server
-  delay(10000);
+  // delay(10000);
+  stepper1.runSpeed();
 }
+
