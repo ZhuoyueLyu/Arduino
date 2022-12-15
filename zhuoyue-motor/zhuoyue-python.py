@@ -19,7 +19,7 @@ else:
 # Change cv2.VideoCapture(1) to cv2.VideoCapture(0). It is a MacOS bug for Coaca applications
 # https://github.com/Classical-machine-learning/invisiblityCloak/issues/3
 cap = cv2.VideoCapture(1)
-ArduinoSerial = serial.Serial('/dev/cu.usbserial-1120', 9600, timeout=0.1)
+ArduinoSerial = serial.Serial('/dev/cu.usbserial-1110', 9600, timeout=0.1)
 curr_num_faces = 0
 
 
