@@ -7,7 +7,19 @@ void setup() {
 }
 
 void loop() {
-  Serial1.readBytes(mystr,5); //Read the serial data and store in var
-  Serial.println(mystr); //Print data on Serial Monitor
-  delay(1000);
+  // if (Serial.available() ) {
+
+  // }
+        
+      // Serial1.readBytes(mystr,5); //
+      // int speed = atoi(mystr);
+      // // sscanf(mystr, "%d", &speed);
+      // // int speed = mystr.parseInt()
+      // int speedNew = speed + 200;
+      // Serial.println(mystr);
+      int speed = Serial1.parseInt();
+      int speedNew = speed + 200;
+      Serial.println(speedNew);
+      delay(1000);
+
 }

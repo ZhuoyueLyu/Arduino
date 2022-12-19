@@ -1,4 +1,4 @@
-char mystr[5] = "Hiii"; //String data
+char mystr[5] = "300"; //String data
 
 void setup() {
   // Begin the Serial at 9600 Baud
