@@ -1,25 +1,49 @@
-char mystr[10]; //Initialized variable to store recieved data
+/*
+ * Written by: Ahmad Saeed Mohammad Saeed
+ * mail: ahmad._.saeed@outlook.com
+ */
+ 
+#define A        8                     // the pin connected to the wire A of the coil A (or to the H-bridge pin controlling the same wire) 
+#define A_bar    14                     // the pin connected to the wire A- of the coil A (or to the H-bridge pin controlling the same wire)
+#define B        9                     // the pin connected to the wire B of the coil A (or to the H-bridge pin controlling the same wire)
+#define B_bar    15                     // the pin connected to the wire B- of the coil A (or to the H-bridge pin controlling the same wire)
+#define x        2500                  // smaller values may make the motor produce more speed and less torque
+#define stepsPerRevolution 200         // you can the number of steps required to make a complete revolution in the data sheet of your motor
+
 
 void setup() {
-  // Begin the Serial at 9600 Baud
-  Serial1.begin(9600);
-  Serial.begin(9600);
+  pinMode(A, OUTPUT);
+  pinMode(A_bar, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(B_bar, OUTPUT);
 }
 
-void loop() {
-  // if (Serial.available() ) {
 
-  // }
-        
-      // Serial1.readBytes(mystr,5); //
-      // int speed = atoi(mystr);
-      // // sscanf(mystr, "%d", &speed);
-      // // int speed = mystr.parseInt()
-      // int speedNew = speed + 200;
-      // Serial.println(mystr);
-      int speed = Serial1.parseInt();
-      int speedNew = speed + 200;
-      Serial.println(speedNew);
-      delay(1000);
+void loop() {  
+  for (int i = 0; i < (stepsPerRevolution/4) ; i++) {
+    digitalWrite(A, HIGH);
+    digitalWrite(A_bar, LOW);
+    digitalWrite(B, LOW);
+    digitalWrite(B_bar, LOW);
+    delayMicroseconds (x);
 
+    digitalWrite(A, LOW);
+    digitalWrite(A_bar, LOW);
+    digitalWrite(B, HIGH);
+    digitalWrite(B_bar, LOW);
+    delayMicroseconds (x);
+
+    digitalWrite(A, LOW);
+    digitalWrite(A_bar, HIGH);
+    digitalWrite(B, LOW);
+    digitalWrite(B_bar, LOW);
+    delayMicroseconds (x);
+
+    digitalWrite(A, LOW);
+    digitalWrite(A_bar, LOW);
+    digitalWrite(B, LOW);
+    digitalWrite(B_bar, HIGH);
+    delayMicroseconds (x);
+  }
+  // delay(1000);  // the motor will complete a full revolution then waits for a second
 }
