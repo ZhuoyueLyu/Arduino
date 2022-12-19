@@ -22,10 +22,20 @@ void setup() {
 
 void loop() {  
 
+
+  if (Serial1.available()) {
+    if (x != 2500) {
     int speed = Serial1.parseInt();
     if (speed != 0) {
       x = 2500;
     }
+    } else {
+      x = 5000;
+    }
+
+
+
+  }
 
   for (int i = 0; i < (stepsPerRevolution/4) ; i++) {
     digitalWrite(A, HIGH);
