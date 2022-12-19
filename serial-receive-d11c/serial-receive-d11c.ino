@@ -1,25 +1,32 @@
-/*
- * Written by: Ahmad Saeed Mohammad Saeed
- * mail: ahmad._.saeed@outlook.com
- */
- 
+char mystr[10]; //Initialized variable to store recieved data
+
 #define A        8                     // the pin connected to the wire A of the coil A (or to the H-bridge pin controlling the same wire) 
 #define A_bar    14                     // the pin connected to the wire A- of the coil A (or to the H-bridge pin controlling the same wire)
 #define B        9                     // the pin connected to the wire B of the coil A (or to the H-bridge pin controlling the same wire)
 #define B_bar    15                     // the pin connected to the wire B- of the coil A (or to the H-bridge pin controlling the same wire)
-#define x        2500                  // smaller values may make the motor produce more speed and less torque
+          
 #define stepsPerRevolution 200         // you can the number of steps required to make a complete revolution in the data sheet of your motor
 
+// smaller values may make the motor produce more speed and less torque
+int x  =   5000     ;   
 
 void setup() {
   pinMode(A, OUTPUT);
   pinMode(A_bar, OUTPUT);
   pinMode(B, OUTPUT);
   pinMode(B_bar, OUTPUT);
+  Serial1.begin(9600); // this is from the sender
+  Serial.begin(9600); // this is the computer
 }
 
 
 void loop() {  
+
+    int speed = Serial1.parseInt();
+    if (speed != 0) {
+      x = 2500;
+    }
+
   for (int i = 0; i < (stepsPerRevolution/4) ; i++) {
     digitalWrite(A, HIGH);
     digitalWrite(A_bar, LOW);
@@ -47,3 +54,7 @@ void loop() {
   }
   // delay(1000);  // the motor will complete a full revolution then waits for a second
 }
+
+
+
+
