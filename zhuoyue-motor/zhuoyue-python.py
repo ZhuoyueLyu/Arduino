@@ -10,7 +10,7 @@ AWB = True
 
 # Face recognition and opencv setup
 cap = cv2.VideoCapture(URL + ":81/stream")
-is_detecting_side_face = False
+is_detecting_side_face = True
 if is_detecting_side_face:
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
 else:
@@ -27,7 +27,7 @@ def count_num_faces(frame):
     faces = face_cascade.detectMultiScale(gray, 1.1, 6)  # detect the face
     for x, y, w, h in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
-    cv2.imshow('img', frame)
+    # cv2.imshow('img', frame)
     return len(faces)
 
 
