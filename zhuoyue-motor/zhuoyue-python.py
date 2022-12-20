@@ -1,13 +1,8 @@
 import cv2
 import numpy as np
-
 import requests
-
-'''
-INFO SECTION
-- if you want to monitor raw parameters of ESP32CAM, open the browser and go to http://192.168.x.x/status
-- command can be sent through an HTTP get composed in the following way http://192.168.x.x/control?var=VARIABLE_NAME&val=VALUE (check varname and value in status)
-'''
+import serial, time
+from scipy import ndimage
 
 # ESP32 URL
 URL = "http://192.168.4.1"
@@ -15,8 +10,24 @@ AWB = True
 
 # Face recognition and opencv setup
 cap = cv2.VideoCapture(URL + ":81/stream")
-face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades +
-                                        'haarcascade_frontalface_alt.xml')  # insert the full path to haarcascade file if you encounter any problem
+is_detecting_side_face = True
+if is_detecting_side_face:
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
+else:
+    # front face detection
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+ArduinoSerial = serial.Serial('/dev/cu.usbserial-0001', 9600, timeout=0.1)
+curr_num_faces = 0
+
+
+def count_num_faces(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 6)  # detect the face
+    for x, y, w, h in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
+    cv2.imshow('img', frame)
+    return len(faces)
 
 
 def set_resolution(url: str, index: int = 1, verbose: bool = False):
@@ -56,16 +67,17 @@ if __name__ == '__main__':
     while True:
         if cap.isOpened():
             ret, frame = cap.read()
-
-            if ret:
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                gray = cv2.equalizeHist(gray)
-
-                faces = face_classifier.detectMultiScale(gray)
-                for (x, y, w, h) in faces:
-                    center = (x + w // 2, y + h // 2)
-                    frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 4)
-
+            frame = cv2.rotate(frame, cv2.ROTATE_180)  # rotate image by 180
+            num_faces = count_num_faces(frame)
+            if is_detecting_side_face:
+                frame = cv2.flip(frame, 1)  # mirror the image
+                num_faces += count_num_faces(frame)
+            string = '{0:d}'.format(num_faces)
+            print(string)
+            if num_faces != curr_num_faces:
+                ArduinoSerial.write(string.encode('utf-8'))
+                curr_num_faces = num_faces
+            # string = 'M{0:d}H{1:d}'.format(2100, 2100)
             cv2.imshow("frame", frame)
 
             key = cv2.waitKey(1)
