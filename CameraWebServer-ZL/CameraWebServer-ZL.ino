@@ -3,7 +3,7 @@
 #define CAMERA_MODEL_AI_THINKER
 #include "camera_pins.h"
 #include <HardwareSerial.h>
-HardwareSerial mySerial(1);
+HardwareSerial mySerial(1); 
 
 char mystr[11]; //Initialized variable to store recieved data
 
@@ -15,10 +15,10 @@ char mystr[11]; //Initialized variable to store recieved data
 // smaller values may make the motor produce more speed and less torque
 int x = 2100;  // the smaller the number, the faster
 int speed_1 = 0; // stop
-int speed_2 = 5000; // mid
-int speed_3 = 2300; // fastest
+int speed_2 = 7000; // mid
+int speed_3 = 2100; // fastest
 bool shouldRun = true; // for the motor
-int curr_speed = 5000;
+int curr_speed = 2100;
 
 
 // ===========================
@@ -36,7 +36,8 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
-  mySerial.begin(9600, SERIAL_8N1, 2, 33); // using pin 2 as TX output, pin 33 is an LED as RX, never mind
+  mySerial.begin(115200, SERIAL_8N1, 33, 2); // RX, TX
+  // Serial.begin(9600, SERIAL_8N1, 2, 33); // using pin 2 as TX output, pin 33 is an LED as RX, never mind
   // Serial.begin(9600);  // this is the computer
 
   camera_config_t config;
@@ -125,9 +126,9 @@ void setup() {
 
 
   startCameraServer();
-  Serial.print("Camera Ready! Use 'http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("' to connect");
+  Serial.print("Camera Ready!");
+  // Serial.print(WiFi.localIP());
+  // Serial.println("' to connect");
 }
 
 void loop() {
@@ -145,16 +146,19 @@ void loop() {
             update_motor2_speed(speed_3);
             curr_speed = speed_3;
             shouldRun = true;
+            delay(500);
          break;
       case 1:
             update_motor2_speed(speed_2);
             curr_speed = speed_2;
             shouldRun = true;
+            delay(500);
          break;
       case 2:
         // do nothing for motor 1
          update_motor2_speed(speed_1);
          shouldRun = false;
+         delay(500);
          break;
       }
    }

@@ -8,15 +8,15 @@ char mystr[10]; //Initialized variable to store recieved data
 #define stepsPerRevolution 200         // you can the number of steps required to make a complete revolution in the data sheet of your motor
 
 // smaller values may make the motor produce more speed and less torque
-int x  =   2065; // the smaller the number, the faster
-// int currentSpeed = 2065;
+int x  =   27600; // the smaller the number, the faster
+bool shouldRun = true;
 
 void setup() {
   pinMode(A, OUTPUT);
   pinMode(A_bar, OUTPUT);
   pinMode(B, OUTPUT);
   pinMode(B_bar, OUTPUT);
-  Serial1.begin(9600); // this is from the sender
+  Serial1.begin(115200); // this is from the sender
   Serial.begin(9600); // this is the computer
 }
 
@@ -30,6 +30,9 @@ void loop() {
     Serial.println(speed); 
     if (speed != 0) {
       x = speed;
+      shouldRun = true;
+    } else {
+      shouldRun = false;
     }
     }
 
@@ -40,7 +43,7 @@ void loop() {
   //     x = speed;
   //   }
   // }
-
+  if (shouldRun) {
   for (int i = 0; i < (stepsPerRevolution/4) ; i++) {
     digitalWrite(A, HIGH);
     digitalWrite(A_bar, LOW);
@@ -65,6 +68,7 @@ void loop() {
     digitalWrite(B, LOW);
     digitalWrite(B_bar, HIGH);
     delayMicroseconds (x);
+  }
   }
   // delay(1000);  // the motor will complete a full revolution then waits for a second
 }
