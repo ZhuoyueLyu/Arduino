@@ -25,20 +25,24 @@ void loop() {
 
 
   if (Serial.available()) {
-
+    // Serial.write(NULL); // to stop the other motor
 
     int HourSpeed, MinSpeed;
-    if (Serial.read() == 'H') {
-      HourSpeed = Serial.parseInt();
+
       if (Serial.read() == 'M') {
         MinSpeed = Serial.parseInt();
+        
         // Serial.println(String(inSpeed);
         itoa(MinSpeed,mystr,10);
         Serial.write(mystr,10); //Write the serial data
+
+            if (Serial.read() == 'H') {
+              HourSpeed = Serial.parseInt();
+            }
       }
-    }
 
     x = HourSpeed;
+    delay(500); // compensate the time lost
   }
 
   for (int i = 0; i < (stepsPerRevolution / 4); i++) {
