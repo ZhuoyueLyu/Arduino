@@ -8,7 +8,8 @@ char mystr[10]; //Initialized variable to store recieved data
 #define stepsPerRevolution 200         // you can the number of steps required to make a complete revolution in the data sheet of your motor
 
 // smaller values may make the motor produce more speed and less torque
-int x  =   5000     ;   
+int x  =   2065; // the smaller the number, the faster
+// int currentSpeed = 2065;
 
 void setup() {
   pinMode(A, OUTPUT);
@@ -24,18 +25,17 @@ void loop() {
 
 
   if (Serial1.available()) {
-    if (x != 2500) {
     int speed = Serial1.parseInt();
     if (speed != 0) {
-      x = 2500;
+      x = speed;
     }
-    } else {
-      x = 5000;
-    }
-
-
-
   }
+  //   if (Serial.available()) {
+  //   int speed = Serial.parseInt();
+  //   if (speed != 0) {
+  //     x = speed;
+  //   }
+  // }
 
   for (int i = 0; i < (stepsPerRevolution/4) ; i++) {
     digitalWrite(A, HIGH);
