@@ -16,7 +16,7 @@ AWB = True
 # Face recognition and opencv setup
 cap = cv2.VideoCapture(URL + ":81/stream")
 face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades +
-    'haarcascade_frontalface_alt.xml')  # insert the full path to haarcascade file if you encounter any problem
+                                        'haarcascade_frontalface_alt.xml')  # insert the full path to haarcascade file if you encounter any problem
 
 
 def set_resolution(url: str, index: int = 1, verbose: bool = False):

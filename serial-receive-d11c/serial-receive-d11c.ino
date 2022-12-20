@@ -26,9 +26,13 @@ void loop() {
 
   if (Serial1.available()) {
     int speed = Serial1.parseInt();
+    if (speed) {// incase we got empty string/int
+    Serial.println(speed); 
     if (speed != 0) {
       x = speed;
     }
+    }
+
   }
   //   if (Serial.available()) {
   //   int speed = Serial.parseInt();
