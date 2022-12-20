@@ -10,14 +10,15 @@ AWB = True
 
 # Face recognition and opencv setup
 cap = cv2.VideoCapture(URL + ":81/stream")
-is_detecting_side_face = True
+is_detecting_side_face = False
 if is_detecting_side_face:
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
 else:
     # front face detection
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-ArduinoSerial = serial.Serial('/dev/cu.usbserial-0001', 9600, timeout=0.1)
+# ArduinoSerial = serial.Serial('/dev/cu.usbserial-0001', 9600, timeout=0.1)
+ArduinoSerial = serial.Serial('/dev/cu.usbserial-0001', 115200, timeout=0.1)
 curr_num_faces = 0
 
 
@@ -63,7 +64,7 @@ def set_awb(url: str, awb: int = 1):
 
 if __name__ == '__main__':
     set_resolution(URL, index=8)
-
+    counter_for_faces = 0
     while True:
         if cap.isOpened():
             ret, frame = cap.read()
@@ -73,10 +74,13 @@ if __name__ == '__main__':
                 frame = cv2.flip(frame, 1)  # mirror the image
                 num_faces += count_num_faces(frame)
             string = '{0:d}'.format(num_faces)
-            print(string)
             if num_faces != curr_num_faces:
-                ArduinoSerial.write(string.encode('utf-8'))
-                curr_num_faces = num_faces
+                counter_for_faces += 1
+                if counter_for_faces >= 3:  # only update the number of faces when that's the case for three frames
+                    ArduinoSerial.write(string.encode('utf-8'))
+                    print(string)
+                    curr_num_faces = num_faces
+                    counter_for_faces = 0
             # string = 'M{0:d}H{1:d}'.format(2100, 2100)
             cv2.imshow("frame", frame)
 
